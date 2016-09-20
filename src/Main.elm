@@ -86,7 +86,82 @@ addressForm model =
             [ label [ for "city" ] [ text "City" ]
             , input [ onInput NewCity, id "city", type' "text" ] []
             , label [ for "state" ] [ text "State" ]
-            , input [ onInput NewState, id "state", type' "text" ] []
+            , stateDropdown
             , label [ for "zip" ] [ text "ZIP" ]
             , input [ onInput NewZip, id "zip", type' "text" ] []
             ]
+
+
+stateDropdown : Html Msg
+stateDropdown =
+    select [ onInput NewState ] stateOptions
+
+
+stateOptions : List (Html a)
+stateOptions =
+    emptyOption :: (List.map stateOption states)
+
+
+emptyOption : Html a
+emptyOption =
+    option [] [ text "Select an option" ]
+
+
+stateOption : ( String, String ) -> Html a
+stateOption ( name, abbreviation ) =
+    option [ value abbreviation ] [ text name ]
+
+
+states : List ( String, String )
+states =
+    [ ( "ALABAMA", "AL" )
+    , ( "ALASKA", "AK" )
+    , ( "ARIZONA", "AZ" )
+    , ( "ARKANSAS", "AR" )
+    , ( "CALIFORNIA", "CA" )
+    , ( "COLORADO", "CO" )
+    , ( "CONNECTICUT", "CT" )
+    , ( "DELAWARE", "DE" )
+    , ( "FLORIDA", "FL" )
+    , ( "GEORGIA", "GA" )
+    , ( "HAWAII", "HI" )
+    , ( "IDAHO", "ID" )
+    , ( "ILLINOIS", "IL" )
+    , ( "INDIANA", "IN" )
+    , ( "IOWA", "IA" )
+    , ( "KANSAS", "KS" )
+    , ( "KENTUCKY", "KY" )
+    , ( "LOUISIANA", "LA" )
+    , ( "MAINE", "ME" )
+    , ( "MARYLAND", "MD" )
+    , ( "MASSACHUSETTS", "MA" )
+    , ( "MICHIGAN", "MI" )
+    , ( "MINNESOTA", "MN" )
+    , ( "MISSISSIPPI", "MS" )
+    , ( "MISSOURI", "MO" )
+    , ( "MONTANA", "MT" )
+    , ( "NEBRASKA", "NE" )
+    , ( "NEVADA", "NV" )
+    , ( "NEW HAMPSHIRE", "NH" )
+    , ( "NEW JERSEY", "NJ" )
+    , ( "NEW MEXICO", "NM" )
+    , ( "NEW YORK", "NY" )
+    , ( "NORTH CAROLINA", "NC" )
+    , ( "NORTH DAKOTA", "ND" )
+    , ( "OHIO", "OH" )
+    , ( "OKLAHOMA", "OK" )
+    , ( "OREGON", "OR" )
+    , ( "PENNSYLVANIA", "PA" )
+    , ( "RHODE ISLAND", "RI" )
+    , ( "SOUTH CAROLINANC", "SC" )
+    , ( "SOUTH DAKOTAND", "SD" )
+    , ( "TENNESSEE", "TN" )
+    , ( "TEXAS", "TX" )
+    , ( "UTAH", "UT" )
+    , ( "VERMONT", "VT" )
+    , ( "VIRGINIA", "VA" )
+    , ( "WASHINGTON", "WA" )
+    , ( "WEST VIRGINIAVA", "WV" )
+    , ( "WISCONSIN", "WI" )
+    , ( "WYOMING", "WY" )
+    ]
