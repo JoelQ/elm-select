@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html.App
 import Html exposing (..)
-import Html.Attributes exposing (type', value, id, for)
+import Html.Attributes exposing (type', value, id, for, selected)
 import Html.Events exposing (onInput)
 
 
@@ -72,34 +72,36 @@ formattedAddress model =
 
 addressForm : Model -> Html Msg
 addressForm model =
+    form []
+        [ textField "city" NewCity model.city
+        , stateDropdown model.state
+        , textField "zip" NewZip model.zip
+        ]
+
+
+textField : String -> (String -> Msg) -> Maybe String -> Html Msg
+textField name msg val =
     let
-        city =
-            Maybe.withDefault "" model.city
-
-        state =
-            Maybe.withDefault "" model.state
-
-        zip =
-            Maybe.withDefault "" model.zip
+        v =
+            Maybe.withDefault "" val
     in
-        form []
-            [ label [ for "city" ] [ text "City" ]
-            , input [ onInput NewCity, id "city", type' "text" ] []
-            , label [ for "state" ] [ text "State" ]
-            , stateDropdown
-            , label [ for "zip" ] [ text "ZIP" ]
-            , input [ onInput NewZip, id "zip", type' "text" ] []
+        div []
+            [ label [ for name ] [ text name ]
+            , input [ onInput msg, id name, type' "text", value v ] []
             ]
 
 
-stateDropdown : Html Msg
-stateDropdown =
-    select [ onInput NewState ] stateOptions
+stateDropdown : Maybe String -> Html Msg
+stateDropdown selectedValue =
+    div []
+        [ label [ for "state" ] [ text "state" ]
+        , select [ id "state", onInput NewState ] (stateOptions selectedValue)
+        ]
 
 
-stateOptions : List (Html a)
-stateOptions =
-    emptyOption :: (List.map stateOption states)
+stateOptions : Maybe String -> List (Html a)
+stateOptions selectedValue =
+    emptyOption :: (List.map (stateOption selectedValue) states)
 
 
 emptyOption : Html a
@@ -107,9 +109,17 @@ emptyOption =
     option [] [ text "Select an option" ]
 
 
-stateOption : ( String, String ) -> Html a
-stateOption ( name, abbreviation ) =
-    option [ value abbreviation ] [ text name ]
+stateOption : Maybe String -> ( String, String ) -> Html a
+stateOption selectedValue ( name, abbreviation ) =
+    case selectedValue of
+        Just selectedV ->
+            if selectedV == abbreviation then
+                option [ value abbreviation, selected True ] [ text name ]
+            else
+                option [ value abbreviation ] [ text name ]
+
+        Nothing ->
+            option [ value abbreviation ] [ text name ]
 
 
 states : List ( String, String )
